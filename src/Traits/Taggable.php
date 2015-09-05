@@ -1,20 +1,12 @@
 <?php
 
-/*
- * This file is part of Laravel Taggable.
- *
- * (c) DraperStudio <hello@draperstud.io>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace DraperStudio\Taggable\Traits;
 
 use DraperStudio\Taggable\Exceptions\InvalidTagException;
 use DraperStudio\Taggable\Models\Tag;
 use DraperStudio\Taggable\Util;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Stringy\StaticStringy as S;
 
@@ -30,7 +22,7 @@ trait Taggable
      */
     public function tags()
     {
-        return $this->morphToMany(Tag::class, 'taggable');
+        return $this->morphToMany(Tag::class, 'taggable')->withTimestamps();
     }
 
     /**
@@ -108,6 +100,10 @@ trait Taggable
             }
         } else {
             $tag = Tag::findOrCreate($string);
+        }
+
+        if(!$this->tags instanceof Collection) {
+            $this->tags = new Collection($this->tags);
         }
 
         if (!$this->tags->contains($tag->getKey())) {
