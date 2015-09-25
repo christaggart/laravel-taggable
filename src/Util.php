@@ -51,7 +51,7 @@ class Util
      */
     public static function makeTagArray(Taggable $model, $field)
     {
-        return $model->tags->lists($field, 'tag_id');
+        return $model->tags()->lists($field, 'tag_id');
     }
 
     /**
